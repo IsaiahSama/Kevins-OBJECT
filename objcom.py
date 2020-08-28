@@ -184,6 +184,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
             tosend.append(Weapon.getcom())
             tosend.append(Armour.getcom())
             tosend.append(Enemy.getcom())
+            tosend.append(Pet.getcom())
             tosend.append(Ability.getcom())
             tosend.append(Passive.getcom())
             tosend.append("All Classes have access to the discard method")
