@@ -83,12 +83,12 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
             tosend.append(f"Name: {creation['name']}, ID: {creation['itemid']}, Object Type: {creation['objtype']}\n")
         
         await ctx.send(f"Here is a list of all of your items: {', '.join(tosend)}")
-        await ctx.send("You can view more information with >>>view itemid")
+        await ctx.send("You can view more information with >>>view itemid. Using the name will return the first match. Not just yours")
 
     
     @commands.command()
     async def view(self, ctx, idtoview):
-        itemtoview = [x for x in self.cusdictlist if idtoview == x["itemid"]]
+        itemtoview = [x for x in self.cusdictlist if idtoview == x["itemid"] or idtoview == x["name"]]
         if itemtoview:
             itv = itemtoview[0]
             embed = discord.Embed(
@@ -104,6 +104,14 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
         else:
             await ctx.send("Could not find any item with that ID")
             return
+
+    
+    @commands.command()
+    async def update(self, ctx, idtoupdate=None):
+        try:
+            itu = int(idtoupdate)
+        except ValueError:
+            await ctx.send("The ID must be a number")
 
 
     # Functions
