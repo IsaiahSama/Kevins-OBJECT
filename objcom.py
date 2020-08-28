@@ -112,9 +112,156 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
             itu = int(idtoupdate)
         except ValueError:
             await ctx.send("The ID must be a number")
+            return
 
+        allo = await self.getuserobj(ctx.author.id)
+        if allo is None:
+            await ctx.send("You don't seem to own any objects. Use >>>help for more information")
+            return
+        
+        otu = [uobj for uobj in allo if uobj["itemid"] == itu]
+        
+        if otu is None:
+            await ctx.send("That ID does not match any of your Objects")
+            return
+        
+        otu = otu[0]
+
+        def check(m):
+            return m.author == ctx.author and m.channel == ctx.channel
+
+        while True:
+            await ctx.send(f"What about {otu['name']} do you wish to change? Keys? Values? or Pairs?. Type keys, values or pairs.")
+            try:
+                tochange = self.bot.wait_for("message", timeout=30, check=check)
+            except TimeoutError:
+                await ctx.send("Took too long. Aborting operation, woop woop.")
+                return
+
+            if tochange.content.lower() not in ["keys", "values", "pairs"]:
+                await ctx.send("That is not keys, values or pairs. If you wish to exit, stay quiet for 30 seconds")
+                continue
+
+            break
+        
+        await self.view(ctx, itu)
+        if tochange.content.lower() == "keys":
+            await self.changekey(ctx, otu)
+        elif tochange.content.lower() == "values":
+            await self.changevalue(ctx, otu)
+        elif tochange.content.lower() == "pairs":
+            await self.changepair(ctx, otu)
+        else:
+            await ctx.send("Something went wrong. Try again later")
 
     # Functions
+
+    async def changekey(self, ctx, otu):
+        await ctx.send("Which key would you like to change?")
+        def check(m):
+            return m.author == ctx.author and m.channel == ctx.channel
+
+        while True:
+            try:
+                ktc = self.bot.wait_for("message", timeout=60, check=check)
+            except TimeoutError:
+                await ctx.send("Took too long... aborting ;p")
+                return
+
+            ktc = ktc.content
+            if ktc.startswith(">>>"): continue
+
+            nktc = [key for key in otu.keys() if key.lower() == ktc.lower()]
+            
+            if nktc:
+                await ctx.send("I have found that key")
+                break
+            else:
+                await ctx.send("I did not find that key. Try again please")
+                continue
+        
+        while True:
+            await ctx.send(f"What would you like to change {nktc} to?")
+            try:
+                resp = self.bot.wait_for("message", timeout=60, check=check)
+            except TimeoutError:
+                await ctx.send("Sigh... Taking a bit too long to answer a relativel simple question... :yawning_face:")
+                return
+            
+            resp = resp.content
+            if ' ' in resp:
+                await ctx.send("Your key can not have in a space. use _ or - instead")
+                continue
+
+            if len(resp) > 15:
+                await ctx.send("Your key cannot be more than 15 charactes")
+                continue
+                
+            break
+
+        otu[resp] = out[nktc]
+        del otu[nktc]
+
+        await ctx.send("Successful")
+
+
+    async def changevalue(self, ctx, otu):
+        await ctx.send("Which key would you like to change the value of?")
+        def check(m):
+            return m.author == ctx.author and m.channel == ctx.channel
+
+        while True:
+            try:
+                ktc = self.bot.wait_for("message", timeout=60, check=check)
+            except TimeoutError:
+                await ctx.send("Took too long... aborting ;p")
+                return
+
+            ktc = ktc.content
+            if ktc.startswith(">>>"): continue
+
+            nktc = [key for key in otu.keys() if key.lower() == ktc.lower()]
+            
+            if nktc:
+                await ctx.send("I have found that key")
+                break
+            else:
+                await ctx.send("I did not find that key. Try again please")
+                continue
+
+        await ctx.send(f"The value for {nktc} is {otu[nktc]}")
+        while True:
+            await ctx.send("What would you like to change this value to?")
+
+            try:
+                tochange = await self.bot.wait_for("message", timeout=60, check=check)
+            except TimeoutError:
+                await ctx.send(":yawning_face: Goodbye")
+                return
+
+            tc = tochange.content
+            if len(tc) > 50:
+                await ctx.send("Your value cannot be more than 50 characters")
+                continue
+            
+            break
+
+        otu[nktc] = tc
+        await ctx.send("Completed")
+
+    
+    async def changepair(self, ctx, otu):
+        await self.changekey(ctx, otu)
+        await self.changevalue(ctx, otu)           
+
+
+    async def getuserobj(self, ownerid):
+        toreturn = [x for x in self.cusdictlist if x["userid"] == ownerid]
+        
+        if toreturn:
+            return toreturn
+        
+        return None
 
     async def getname(self, ctx, objtomake):
         await ctx.send("You will give me the information on your creation in key=value format. Begin by telling me it's name")
@@ -136,7 +283,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
             await ctx.send("Refrain from using spaces. Use _ or - instead")
             return
 
-        thename = re.findall(r"name=(\S+?)", msg.content)
+        thename = re.findall(r"name=(.+?)", msg.content)
         if not thename:
             await ctx.send("Did not get the name. Try again. Format is name=the_name_you_want")
             return
@@ -182,19 +329,23 @@ As a side note, you can overwrite a previous value using key=different_value. Ty
                     await ctx.send("Finishing up")
                     break
 
-            if " " in msg:
-                await ctx.send("Your key=value must not have in spaces. Use _ or - instead")
-                continue
-
-            if msg.lower() in self.rwords:
-                await ctx.send("You cannot use That as a key because it is a reserved word")
-                continue
-
-            attri = re.findall(r"(\S+)=(\S+)", msg)
+            attri = re.findall(r"(\S+)=(.+)", msg)
             if attri:
                 attri = attri[0]
                 key = attri[0]
+                if key.lower() in self.rwords:
+                    await ctx.send("You cannot use That as a key because it is a reserved word")
+                    continue
+                if " " in key:
+                    await ctx.send("Your key must not have in spaces. Use _ or - instead")
+                    continue
+
+                if len(key) > 15:
+                    await ctx.send("Your key should not be more than 15 characters")
+
                 value = attri[1]
+                if len(value) > 50:
+                    await ctx.send("Your value cannot be more than 50 characters")
 
             else:
                 await ctx.send("That did not match the key=value format I told you to use 🏋️‍♂️")
@@ -251,8 +402,6 @@ As a side note, you can overwrite a previous value using key=different_value. Ty
             await ctx.send(error)         
 
         else:
-            channel = self.bot.get_channel(740337325971603537)
-            await channel.send(f"{ctx.author.name}: {error}")
             print(error)
 
 
