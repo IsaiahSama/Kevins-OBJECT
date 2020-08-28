@@ -59,6 +59,13 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
             await ctx.send(tempbed)
             return
 
+        if param.lower() not in paradelist:
+            await ctx.send("Sorry The template you requested does not seem to have anything to do with Isaiah's Parade")
+            return
+
+        temp = await self.getTemplate(param)
+        await ctx.send(temp)
+
     @commands.command()
     async def example(self, ctx):
         await ctx.send("It was requested and therefore it will be granted. Here is an example")
@@ -228,6 +235,24 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
 
 
     # Functions
+
+    async def getTemplate(self, temptoget):
+        if temptoget.lower() in ["item", "potion"]:
+            return "name:\ndescription:\ncost:\neffect:\nduration:\ntier:\nhealthup:\npowerup:\nmindmgup:\nmaxdmgup:\ncritup\npotionoritem:"
+        elif temptoget.lower() == "weapon":
+            return "name:\ndescription:\neffect:\ndamage:\ncritplus:\nlifesteal:\ncost:\ncost:\ntier:"
+        elif temptoget.lower() == "armour":
+            return "name:\ndescription:\nhealthup:\npowerup:\ncost:\nregen:\nweaponPair:\ntier:\n"
+        elif temptoget.lower() in ["passive", "ability"]:
+            return "name:\ndescription:\nusagename:\neffect:\npowerX:\npower+:\nhealthup:\nmindmgup:\nmaxdmgup:\ncooldown(onlyforabilities):"
+        elif temptoget.lower() == "pet":
+            return "name:\ndescription:\ntype:\nnumofstages:\nexptoevolve:\ncurrentstage:\nevolvesinto:\nplaymessage:\nfeedmessage:"
+        elif temptoget.lower() == "enemy":
+            t = "name:\nhealth:\nmindmg:\nmaxdmg:\nmincoin:\nmaxcoin:\nentrymessage:\nminxp:\ncritchance:\nhealchance:\nability:\npassive:\nattackmsg:\nweapon:\narmour:\nlevel:\n"
+            return t
+
+        else:
+            return "I'm not quite sure what... but something went wrong"
 
     async def changekey(self, ctx, otu):
         await ctx.send("Which key would you like to change?")
