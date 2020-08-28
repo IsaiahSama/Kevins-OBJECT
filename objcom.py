@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 import asyncio
 import math
 from kobj import *
@@ -7,6 +7,8 @@ from ktemplate import templatelist, paradelist
 from random import randint
 import random
 import re
+import json
+from os import path
 
 
 class objcommands(commands.Cog):
@@ -14,8 +16,16 @@ class objcommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         TheWorld.exists = True
+        self.save.start()
+
+    if path.exists("customobjects.json"):
+        with open("customobjects.json") as p:
+            cusdictlist = json.load(p)
+    else:
+        cusdictlist = []
 
     cusobjlist = []
+    rwords = ["itemid", "userid", "username", "exists", "objtype"]
 
     # Commands
 
@@ -30,7 +40,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
 
         tomake = [x for x in templatelist if objtomake.lower() == x.name.lower()]
         if not tomake:
-            await ctx.send("I can't seem to find that. Use <>template to view a list")
+            await ctx.send("I can't seem to find that. Use >>>template to view a list")
             return
         
         else:
@@ -86,7 +96,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
 
         thename = re.findall(r"name=(\S+?)", msg.content)
         if not thename:
-            await ctx.send("Did not get the name. Try again. format is name=the_name_you_want")
+            await ctx.send("Did not get the name. Try again. Format is name=the_name_you_want")
             return
 
         _vname = thename[0]
@@ -96,7 +106,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
         await self.creating(ctx, userobj)
 
     async def getid(self, ctx):
-        iid = [x.itemid for x in self.cusobjlist if x.userid == ctx.author.id]
+        iid = [x["itemid"] for x in self.cusdictlist]
         if iid:
             iid.sort(reverse=True)
             highestid = iid[0]
@@ -113,20 +123,31 @@ As a side note, you can overwrite a previous value using key=different_value. Ty
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
         while counter < 21:
-            await ctx.send("I'm listening")
+            await ctx.send("Speak, I'm listening")
             try:
                 msg = self.bot.wait_for("message", timeout=90, check=check)
             except:
                 await ctx.send("You took too long to respond and I lost interest 😓. Try again later")
                 return
 
+            msg = msg.content
+
             if "=" not in msg:
-                await ctx.send("Ending Early")
-                break
+                if counter == 1:
+                    await ctx.send("Cancelling")
+                    return
+                else:
+                    await ctx.send("Finishing up")
+                    break
 
             if " " in msg:
                 await ctx.send("Your key=value must not have in spaces. Use _ or - instead")
                 continue
+
+            if msg.lower() in self.rwords:
+                await ctx.send("You cannot use That as a key because it is a reserved word")
+                continue
+
             attri = re.findall(r"(\S+)=(\S+)", msg)
             if attri:
                 attri = attri[0]
@@ -140,9 +161,41 @@ As a side note, you can overwrite a previous value using key=different_value. Ty
             setattr(objmaking, key, value)
             counter += 1
 
-        await ctx.send("Completed. View with >>>mycreation")
+        await ctx.send("Completed. View with >>>mycreations")
         self.cusobjlist.append(objmaking)
+        self.cusdictlist.append(objmaking.__dict__)
 
+    
+    @commands.command()
+    async def mycreations(self, ctx):
+        usercreations = [dic for dic in self.cusdictlist if dic["userid"] == ctx.author.id]
+        if not usercreations:
+            await ctx.send("You have not created any items as yet. Get started with >>>help")
+            return
+
+        tosend = []
+        for creation in usercreations:
+            tosend.append(f"Name: {creation['name']}, ID: {creation['itemid']}, Object Type: {creation['objtype']}\n")
+        
+        await ctx.send(f"Here is a list of all of your items: {', '.join(tosend)}")
+        await ctx.send("You can view more information with >>>view itemid")
+
+    
+    @commands.command()
+    async def view(self, ctx, idtoview):
+        itemtoview = [x for x in self.cusdictlist if idtoview == x["itemid"]]
+        if itemtoview:
+            itv = itemtoview[0]
+        else:
+            await ctx.send("Could not find any item with that ID")
+            return
+    
+
+    @tasks.loop(minutes=2)
+    async def save(self):
+        if len(self.cusdictlist) > 0:
+            with open("customobjects.json", "w") as f:
+                json.dump(self.cusdictlist, f, indent=4)
 
     # Events
 
