@@ -91,6 +91,16 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
         itemtoview = [x for x in self.cusdictlist if idtoview == x["itemid"]]
         if itemtoview:
             itv = itemtoview[0]
+            embed = discord.Embed(
+                title="Viewing Object",
+                description=f"Showing {itv['username']}'s {itv['objtype']}",
+                color=randint(0, 0xffffff)
+            )
+
+            for k, v in itv:
+                embed.add_field(name=k, value=v)
+            
+            await ctx.send(embed=embed)
         else:
             await ctx.send("Could not find any item with that ID")
             return
@@ -194,6 +204,7 @@ As a side note, you can overwrite a previous value using key=different_value. Ty
         _typeobj = objtoget["objtype"]
         p = objtoget
         objtoreturn = eval("typeobj(p['exists'], p['userid'], p['username'], p['itemid'], p['objtype'], p['name'])")
+        
         for k, v in p.items():
             setattr(objtoreturn, k, v)
 
