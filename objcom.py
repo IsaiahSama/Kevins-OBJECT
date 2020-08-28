@@ -71,6 +71,30 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
         await ctx.send("Done")
         await ctx.send("```Completed. View with >>>mycreations```")
 
+    @commands.command()
+    async def mycreations(self, ctx):
+        usercreations = [dic for dic in self.cusdictlist if dic["userid"] == ctx.author.id]
+        if not usercreations:
+            await ctx.send("You have not created any items as yet. Get started with >>>help")
+            return
+
+        tosend = []
+        for creation in usercreations:
+            tosend.append(f"Name: {creation['name']}, ID: {creation['itemid']}, Object Type: {creation['objtype']}\n")
+        
+        await ctx.send(f"Here is a list of all of your items: {', '.join(tosend)}")
+        await ctx.send("You can view more information with >>>view itemid")
+
+    
+    @commands.command()
+    async def view(self, ctx, idtoview):
+        itemtoview = [x for x in self.cusdictlist if idtoview == x["itemid"]]
+        if itemtoview:
+            itv = itemtoview[0]
+        else:
+            await ctx.send("Could not find any item with that ID")
+            return
+
 
     # Functions
 
@@ -166,29 +190,14 @@ As a side note, you can overwrite a previous value using key=different_value. Ty
         self.cusdictlist.append(objmaking.__dict__)
 
     
-    @commands.command()
-    async def mycreations(self, ctx):
-        usercreations = [dic for dic in self.cusdictlist if dic["userid"] == ctx.author.id]
-        if not usercreations:
-            await ctx.send("You have not created any items as yet. Get started with >>>help")
-            return
+    async def getobj(self, objtoget):
+        _typeobj = objtoget["objtype"]
+        p = objtoget
+        objtoreturn = eval("typeobj(p['exists'], p['userid'], p['username'], p['itemid'], p['objtype'], p['name'])")
+        for k, v in p.items():
+            setattr(objtoreturn, k, v)
 
-        tosend = []
-        for creation in usercreations:
-            tosend.append(f"Name: {creation['name']}, ID: {creation['itemid']}, Object Type: {creation['objtype']}\n")
-        
-        await ctx.send(f"Here is a list of all of your items: {', '.join(tosend)}")
-        await ctx.send("You can view more information with >>>view itemid")
-
-    
-    @commands.command()
-    async def view(self, ctx, idtoview):
-        itemtoview = [x for x in self.cusdictlist if idtoview == x["itemid"]]
-        if itemtoview:
-            itv = itemtoview[0]
-        else:
-            await ctx.send("Could not find any item with that ID")
-            return
+        return objtoreturn
     
 
     @tasks.loop(minutes=2)
