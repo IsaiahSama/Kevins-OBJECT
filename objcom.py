@@ -154,6 +154,23 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
         else:
             await ctx.send("Something went wrong. Try again later")
 
+    @commands.command()
+    async def delete(self, ctx, idtodelete, conf=False):
+        itemtodelete = [obj for obj in self.cusdictlist if obj["itemid"] == idtodelete and obj["userid"] == ctx.author.id]
+
+        if itemtodelete:
+            itd = itemtodelete[0]
+            if not conf:
+                await ctx.send(f"This will delete this item permanately. Do >>>delete {idtodelete} True to confirm")
+                return
+
+            await ctx.send(f"Deleting {itd.name}")
+            del itd
+            await ctx.send("Successful, for I have devoured it :yum:")
+        else:
+            await ctx.send("I could not find any item belonging to you with that ID")
+            return
+
     # Functions
 
     async def changekey(self, ctx, otu):
@@ -199,7 +216,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
                 
             break
 
-        otu[resp] = out[nktc]
+        otu[resp] = otu[nktc]
         del otu[nktc]
 
         await ctx.send("Successful")
