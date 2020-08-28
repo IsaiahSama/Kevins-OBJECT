@@ -1,3 +1,4 @@
+import re
 class TheWorld:
 
     def __init__(self, exists=False, userid=None, username=None, itemid=None, objtype=None, name=None):
@@ -14,8 +15,25 @@ class TheWorld:
     def getowner(self):
         return self.itemid
 
+    def discard(self):
+        return f"Discarded away {self.username}'s {self.name}"
+
 
 class Item(TheWorld):
+
+    @classmethod
+    def getcom(self):
+        return "Actions for Items are puton, takeoff and drop"
+
+    @classmethod
+    def getcomlist(self):
+        msg = self.getcom()
+        lmsg = re.findall(r"are\s(.+)", msg)
+        lmsg = lmsg.strip("and")
+        nlmsg = lmsg.split(" ")
+        for content in nlmsg:
+            if "," in content:
+                content = content.strip(",")
 
     def puton(self):
         return f"Equipped {self.username}'s {self.name}"
@@ -28,6 +46,20 @@ class Item(TheWorld):
 
 class Person(TheWorld):
 
+    @classmethod
+    def getcom(self):
+        return "Actions for Person class are talkto, wave and stare"
+
+    @classmethod
+    def getcomlist(self):
+        msg = self.getcom()
+        lmsg = re.findall(r"are\s(.+)", msg)
+        lmsg = lmsg.strip("and")
+        nlmsg = lmsg.split(" ")
+        for content in nlmsg:
+            if "," in content:
+                content = content.strip(",")
+
     def talkto(self):
         return f"Spoke to {self.name}"
     
@@ -38,17 +70,48 @@ class Person(TheWorld):
         return f"Stares at {self.name}"
 
 class Creature(TheWorld):
-    
+
+    @classmethod
+    def getcom(self):
+        return "Actions for Creatures are tame, runfrom, runto and fight"
+
+    @classmethod
+    def getcomlist(self):
+        msg = self.getcom()
+        lmsg = re.findall(r"are\s(.+)", msg)
+        lmsg = lmsg.strip("and")
+        nlmsg = lmsg.split(" ")
+        for content in nlmsg:
+            if "," in content:
+                content = content.strip(",")
+
     def tame(self):
         return f"Managed to tame {self.username}'s {self.name}"
 
     def runfrom(self):
         return f"Ran from {self.username}'s {self.name}"
 
+    def runto(self):
+        return f"Ran towards {self.username}'s {self.name}"
+
     def fight(self):
         return f"Fought {self.username}'s {self.name}"
 
 class Potion(TheWorld):
+
+    @classmethod
+    def getcom(self):
+        return "Actions for Potions are drink and drop"
+
+    @classmethod
+    def getcomlist(self):
+        msg = self.getcom()
+        lmsg = re.findall(r"are\s(.+)", msg)
+        lmsg = lmsg.strip("and")
+        nlmsg = lmsg.split(" ")
+        for content in nlmsg:
+            if "," in content:
+                content = content.strip(",")
 
     def drink(self):
         return f"Gulped down {self.username}'s {self.name}"
@@ -58,13 +121,44 @@ class Potion(TheWorld):
 
 class Vehicle(TheWorld):
 
+    @classmethod
+    def getcom(self):
+        return "Actions for Vehicles are drive, hit and crash"
+
+    @classmethod
+    def getcomlist(self):
+        msg = self.getcom()
+        lmsg = re.findall(r"are\s(.+)", msg)
+        lmsg = lmsg.strip("and")
+        nlmsg = lmsg.split(" ")
+        for content in nlmsg:
+            if "," in content:
+                content = content.strip(",")
+
     def drive(self):
         return f"Drove around in {self.username}'s {self.name}"
 
     def hit(self):
         return f"hit someone with {self.username}'s {self.name}... Whoops"
 
+    def crash(self):
+        return f"Crashed {self.username}'s {self.name}"
+
 class Weapon(TheWorld):
+
+    @classmethod
+    def getcom(self):
+        return "Actions for Weapons are swing, strike, showoff and sheathe"
+
+    @classmethod
+    def getcomlist(self):
+        msg = self.getcom()
+        lmsg = re.findall(r"are\s(.+)", msg)
+        lmsg = lmsg.strip("and")
+        nlmsg = lmsg.split(" ")
+        for content in nlmsg:
+            if "," in content:
+                content = content.strip(",")
 
     def swing(self):
         return f"Swings around {self.username}'s {self.name}"
@@ -79,7 +173,21 @@ class Weapon(TheWorld):
         return f"Returns {self.name} to it's sheathe"
 
 class Armour(TheWorld):
-    
+
+    @classmethod
+    def getcom(self):
+        return "Actions for Armour are equip, takeoff and polish"
+
+    @classmethod
+    def getcomlist(self):
+        msg = self.getcom()
+        lmsg = re.findall(r"are\s(.+)", msg)
+        lmsg = lmsg.strip("and")
+        nlmsg = lmsg.split(" ")
+        for content in nlmsg:
+            if "," in content:
+                content = content.strip(",")
+
     def equip(self):
         return F"Equipped {self.username}'s {self.name}"
 
@@ -90,6 +198,20 @@ class Armour(TheWorld):
         return F"Polishes {self.username}'s {self.name}"
 
 class Pet(TheWorld):
+
+    @classmethod
+    def getcom(self):
+        return "Actions for Pets are rub, play and feed"
+
+    @classmethod
+    def getcomlist(self):
+        msg = self.getcom()
+        lmsg = re.findall(r"are\s(.+)", msg)
+        lmsg = lmsg.strip("and")
+        nlmsg = lmsg.split(" ")
+        for content in nlmsg:
+            if "," in content:
+                content = content.strip(",")
 
     def rub(self):
         return f"Rubs {self.username}'s {self.name}"
@@ -102,6 +224,20 @@ class Pet(TheWorld):
 
 class Enemy(TheWorld):
 
+    @classmethod
+    def getcom(self):
+        return "Actions for Enemies are stare, fight and run"
+
+    @classmethod
+    def getcomlist(self):
+        msg = self.getcom()
+        lmsg = re.findall(r"are\s(.+)", msg)
+        lmsg = lmsg.strip("and")
+        nlmsg = lmsg.split(" ")
+        for content in nlmsg:
+            if "," in content:
+                content = content.strip(",")
+
     def stare(self):
         return f"Stares at {self.username}'s {self.name}"
 
@@ -112,6 +248,20 @@ class Enemy(TheWorld):
         return f"Runs from {self.username}'s {self.name}"
 
 class Ability(TheWorld):
+
+    @classmethod
+    def getcom(self):
+        return "Actions for Abilities are use, turnon, turnoff and showoff"
+
+    @classmethod
+    def getcomlist(self):
+        msg = self.getcom()
+        lmsg = re.findall(r"are\s(.+)", msg)
+        lmsg = lmsg.strip("and")
+        nlmsg = lmsg.split(" ")
+        for content in nlmsg:
+            if "," in content:
+                content = content.strip(",")
 
     def use(self):
         return f"Uses {self.username}'s {self.name}"
@@ -126,7 +276,21 @@ class Ability(TheWorld):
         return f"Shows off {self.username}'s {self.name}"
 
 class Passive(TheWorld):
-    
+
+    @classmethod
+    def getcom(self):
+        return "Actions for Passives are showoff and use"
+
+    @classmethod
+    def getcomlist(self):
+        msg = self.getcom()
+        lmsg = re.findall(r"are\s(.+)", msg)
+        lmsg = lmsg.strip("and")
+        nlmsg = lmsg.split(" ")
+        for content in nlmsg:
+            if "," in content:
+                content = content.strip(",")
+
     def showoff(self):
         return f"Shows off {self.username}'s {self.name}"
 

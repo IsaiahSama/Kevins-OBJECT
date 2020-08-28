@@ -30,4 +30,8 @@ commandlist = MyHelp("Command List", "Shows a list of commands", ">>>commandlist
 
 mobject = MyHelp("OBJECT", "Shows what the acronym OBJECT in Kevin's OBJECT stands for", ">>>OBJECT")
 
-cmdlist = [create, template, example, mycreations, view, mhelp, commandlist, mobject]
+action = MyHelp("Actions", "Shows the actions available for an object. Note these are class specific", ">>>actions [id]")
+
+do = MyHelp("Do", "Does an action available to the class of the object whose id you specify", ">>>do actionName objectid")
+
+cmdlist = [create, template, example, mycreations, view, mhelp, commandlist, mobject, action, do]

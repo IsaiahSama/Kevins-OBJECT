@@ -171,6 +171,61 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
             await ctx.send("I could not find any item belonging to you with that ID")
             return
 
+    
+    @commands.command()
+    async def actions(self, ctx, idtoget=None):
+        if idtoget is None:
+            tosend = []
+            tosend.append(Item.getcom())
+            tosend.append(Person.getcom())
+            tosend.append(Creature.getcom())
+            tosend.append(Potion.getcom())
+            tosend.append(Vehicle.getcom())
+            tosend.append(Weapon.getcom())
+            tosend.append(Armour.getcom())
+            tosend.append(Enemy.getcom())
+            tosend.append(Ability.getcom())
+            tosend.append(Passive.getcom())
+            tosend.append("All Classes have access to the discard method")
+            
+            tosend = '\n'.join(tosend)
+
+            await ctx.send(tosend)
+
+        else:
+            try:
+                itg = int(idtoget)
+            except ValueError:
+                await ctx.send("That ID is not a number")
+                return
+
+        objtoget = [uobj for uobj in self.cusdictlist if uobj["itemid"] == itg]
+        if not objtoget:
+            await ctx.send("Could not find an object matching that ID")
+            return
+
+        uobj = await self.getobj(objtoget)
+        await ctx.send(uobj.getcom())
+
+    @commands.command()
+    async def do(self, ctx, actionname, objectid):
+        dicttoobj = [uobj for uobj in self.cusdictlist if uobj["itemid"] == objectid]
+        if not dicttoobj:
+            await ctx.send("Could not find an object with that ID")
+            return
+
+        toobj = dicttoobj[0]
+        obj = await self.getobj(toobj)
+
+        if actionname.lower() not in obj.getcomlist():
+            await ctx.send("That is not a valid action of this object")
+            return
+
+        atd = actionname.lower()
+        msg = eval("obj.atd()")
+        await ctx.send(msg)
+
+
     # Functions
 
     async def changekey(self, ctx, otu):
