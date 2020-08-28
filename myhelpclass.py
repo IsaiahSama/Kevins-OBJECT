@@ -28,4 +28,6 @@ mhelp = MyHelp("Help", "Reveals the help command", ">>>help")
 
 commandlist = MyHelp("Command List", "Shows a list of commands", ">>>commandlist")
 
-cmdlist = [create, template, example, mycreations, view, mhelp, commandlist]
+mobject = MyHelp("OBJECT", "Shows what the acronym OBJECT in Kevin's OBJECT stands for", ">>>OBJECT")
+
+cmdlist = [create, template, example, mycreations, view, mhelp, commandlist, mobject]

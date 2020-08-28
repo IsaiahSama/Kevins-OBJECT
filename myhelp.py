@@ -62,6 +62,16 @@ You'll have to do >>>template templatename to get the format. I look forward to 
 
         await ctx.send(embed=helpbed, content="Use >>>help commandname for more information")
 
+    @commands.command()
+    async def OBJECT(self, ctx):
+        await ctx.send("""
+O- Objects
+B- Bring
+J- Joy
+E- Encouraging
+C- Creativity
+T- Tremendously""")
+
 
 def setup(bot):
     bot.add_cog(myhelp(bot))
