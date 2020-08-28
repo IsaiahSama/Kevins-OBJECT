@@ -221,8 +221,8 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
             await ctx.send("That is not a valid action of this object")
             return
 
-        atd = actionname.lower()
-        msg = eval("obj.atd()")
+        _atd = actionname.lower()
+        msg = eval("obj._atd()")
         await ctx.send(msg)
 
 
