@@ -75,7 +75,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
         await ctx.send("```Good, now tell me any attributes of Jerry_The_Beast that you want```")
         await ctx.send("age=1004")
         await ctx.send("description=very scary")
-        await ctx.send("Done")
+        await ctx.send("something without an equal sign to end")
         await ctx.send("```Completed. View with >>>mycreations```")
 
     @commands.command()
