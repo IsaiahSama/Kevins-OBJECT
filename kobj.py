@@ -1,4 +1,10 @@
 import re
+
+classes = {}
+def register(klass):
+    classes[klass.__name__] = klass
+    return klass
+    
 class TheWorld:
 
     def __init__(self, exists=False, userid=None, username=None, itemid=None, objtype=None, name=None):
@@ -18,7 +24,7 @@ class TheWorld:
     def discard(self):
         return f"Discarded away {self.username}'s {self.name}"
 
-
+@register
 class Item(TheWorld):
 
     @classmethod
@@ -44,6 +50,7 @@ class Item(TheWorld):
     def drop(self):
         return f"Drops {self.username}'s {self.name}"
 
+@register
 class Person(TheWorld):
 
     @classmethod
@@ -69,6 +76,7 @@ class Person(TheWorld):
     def stare(self):
         return f"Stares at {self.name}"
 
+@register
 class Creature(TheWorld):
 
     @classmethod
@@ -97,6 +105,7 @@ class Creature(TheWorld):
     def fight(self):
         return f"Fought {self.username}'s {self.name}"
 
+@register
 class Potion(TheWorld):
 
     @classmethod
@@ -119,6 +128,7 @@ class Potion(TheWorld):
     def drop(self):
         return f"Dropped {self.username}'s {self.name}"
 
+@register
 class Vehicle(TheWorld):
 
     @classmethod
@@ -144,6 +154,7 @@ class Vehicle(TheWorld):
     def crash(self):
         return f"Crashed {self.username}'s {self.name}"
 
+@register
 class Weapon(TheWorld):
 
     @classmethod
@@ -172,6 +183,7 @@ class Weapon(TheWorld):
     def sheathe(self):
         return f"Returns {self.name} to it's sheathe"
 
+@register
 class Armour(TheWorld):
 
     @classmethod
@@ -197,6 +209,7 @@ class Armour(TheWorld):
     def polish(self):
         return F"Polishes {self.username}'s {self.name}"
 
+@register
 class Pet(TheWorld):
 
     @classmethod
@@ -222,6 +235,7 @@ class Pet(TheWorld):
     def feed(self):
         return f"Feeds {self.username}'s {self.name}"
 
+@register
 class Enemy(TheWorld):
 
     @classmethod
@@ -247,6 +261,7 @@ class Enemy(TheWorld):
     def run(self):
         return f"Runs from {self.username}'s {self.name}"
 
+@register
 class Ability(TheWorld):
 
     @classmethod
@@ -275,6 +290,7 @@ class Ability(TheWorld):
     def showoff(self):
         return f"Shows off {self.username}'s {self.name}"
 
+@register
 class Passive(TheWorld):
 
     @classmethod

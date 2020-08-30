@@ -17,17 +17,18 @@ class myhelp(commands.Cog):
                 color=randint(0, 0xffffff)
             )
 
-            embed.set_thumbnail(url=self.bot.avatar_url)
+            embed.set_thumbnail(url=self.bot.user.avatar_url)
             embed.add_field(name="Basic Information:", value="""
     I function using the CRUD principle, meaning Create, Read, Update and Delete.
-    As such, I will allow you to create your objects, view them, update them and delete them as you see fit""")
-            embed.add_field(name=">>>commandlist", value="You can use >>>commandlist to view my commands")
-            embed.add_field(name="Extra Information", value="All items you create only require a name. Everything else is your choice")
+    As such, I will allow you to create your objects, view them, update them and delete them as you see fit""", inline=False)
+            embed.add_field(name=">>>commandlist", value="You can use >>>commandlist to view my commands", inline=False)
+            embed.add_field(name="Extra Information", value="All items you create only require a name. Everything else is your choice",
+             inline=False)
             embed.add_field(name="Other Commands", 
             value="""If you wish to create an item that may be implemented into the bot itself, It has to follow a certain format.
 Templates that can be implemented into the bot itself will be marked with <> followed by the category name.
 You can use these same templates like you would the others, and make your own custom stuff, but to make one compatible with the bot...
-You'll have to do >>>template templatename to get the format. I look forward to seeing what you create""")
+You'll have to do >>>template nameoftemplate to get the format. I look forward to seeing what you create""")
 
             await ctx.send(embed=embed)
             return

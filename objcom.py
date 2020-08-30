@@ -9,6 +9,7 @@ import random
 import re
 import json
 from os import path
+import traceback
 
 
 class objcommands(commands.Cog):
@@ -44,7 +45,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
             return
         
         else:
-            await self.getname(ctx, tomake)
+            await self.getname(ctx, objtomake)
 
     @commands.command()
     async def template(self, ctx, param=None):
@@ -56,10 +57,10 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
             for template in templatelist:
                 tempbed.add_field(name=f'Name: {template.name}', value=f"Description: {template.desc}. Category: {template.category}")
 
-            await ctx.send(tempbed)
+            await ctx.send(embed=tempbed)
             return
-
-        if param.lower() not in paradelist:
+        tlist = [p.name for p in paradelist]
+        if param.capitalize() not in tlist:
             await ctx.send("Sorry The template you requested does not seem to have anything to do with Isaiah's Parade")
             return
 
@@ -89,7 +90,8 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
         for creation in usercreations:
             tosend.append(f"Name: {creation['name']}, ID: {creation['itemid']}, Object Type: {creation['objtype']}\n")
         
-        await ctx.send(f"Here is a list of all of your items: {', '.join(tosend)}")
+        p = '\n'.join(tosend)
+        await ctx.send(f"Here is a list of all of your items:{p}")
         await ctx.send("You can view more information with >>>view itemid. Using the name will return the first match. Not just yours")
 
     
@@ -140,7 +142,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
         while True:
             await ctx.send(f"What about {otu['name']} do you wish to change? Keys? Values? or Pairs?. Type keys, values or pairs.")
             try:
-                tochange = self.bot.wait_for("message", timeout=30, check=check)
+                tochange = await self.bot.wait_for("message", timeout=30, check=check)
             except TimeoutError:
                 await ctx.send("Took too long. Aborting operation, woop woop.")
                 return
@@ -207,13 +209,13 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
                 await ctx.send("That ID is not a number")
                 return
 
-        objtoget = [uobj for uobj in self.cusdictlist if uobj["itemid"] == itg]
-        if not objtoget:
-            await ctx.send("Could not find an object matching that ID")
-            return
+            objtoget = [uobj for uobj in self.cusdictlist if uobj["itemid"] == itg]
+            if not objtoget:
+                await ctx.send("Could not find an object matching that ID")
+                return
 
-        uobj = await self.getobj(objtoget)
-        await ctx.send(uobj.getcom())
+            uobj = await self.getobj(objtoget)
+            await ctx.send(uobj.getcom())
 
     @commands.command()
     async def do(self, ctx, actionname, objectid):
@@ -261,7 +263,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
 
         while True:
             try:
-                ktc = self.bot.wait_for("message", timeout=60, check=check)
+                ktc = await self.bot.wait_for("message", timeout=60, check=check)
             except TimeoutError:
                 await ctx.send("Took too long... aborting ;p")
                 return
@@ -281,7 +283,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
         while True:
             await ctx.send(f"What would you like to change {nktc} to?")
             try:
-                resp = self.bot.wait_for("message", timeout=60, check=check)
+                resp = await self.bot.wait_for("message", timeout=60, check=check)
             except TimeoutError:
                 await ctx.send("Sigh... Taking a bit too long to answer a relativel simple question... :yawning_face:")
                 return
@@ -310,7 +312,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
 
         while True:
             try:
-                ktc = self.bot.wait_for("message", timeout=60, check=check)
+                ktc = await self.bot.wait_for("message", timeout=60, check=check)
             except TimeoutError:
                 await ctx.send("Took too long... aborting ;p")
                 return
@@ -389,7 +391,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
         _vname = thename[0]
         _objtomake = objtomake.capitalize()
         _iditem = await self.getid(ctx)
-        userobj = eval("objtomake(True, ctx.author.id, ctx.author.name, _iditem, _objtomake, _vname")
+        userobj = classes[_objtomake](True, ctx.author.id, ctx.author.name, _iditem, _objtomake, _vname)
         await self.creating(ctx, userobj)
 
     async def getid(self, ctx):
@@ -412,7 +414,7 @@ As a side note, you can overwrite a previous value using key=different_value. Ty
         while counter < 21:
             await ctx.send("Speak, I'm listening")
             try:
-                msg = self.bot.wait_for("message", timeout=90, check=check)
+                msg = await self.bot.wait_for("message", timeout=90, check=check)
             except:
                 await ctx.send("You took too long to respond and I lost interest 😓. Try again later")
                 return
@@ -460,7 +462,7 @@ As a side note, you can overwrite a previous value using key=different_value. Ty
     async def getobj(self, objtoget):
         _typeobj = objtoget["objtype"]
         p = objtoget
-        objtoreturn = eval("typeobj(p['exists'], p['userid'], p['username'], p['itemid'], p['objtype'], p['name'])")
+        objtoreturn = classes[_typeobj](p['exists'], p['userid'], p['username'], p['itemid'], p['objtype'], p['name'])
         
         for k, v in p.items():
             setattr(objtoreturn, k, v)
@@ -478,6 +480,22 @@ As a side note, you can overwrite a previous value using key=different_value. Ty
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
+        etype = type(error)
+        trace = error.__traceback__
+
+        # the verbosity is how large of a traceback to make
+        # more specifically, it's the amount of levels up the traceback goes from the exception source
+        verbosity = 4
+
+        # 'traceback' is the stdlib module, `import traceback`.
+        lines = traceback.format_exception(etype, error, trace, verbosity)
+
+        # format_exception returns a list with line breaks embedded in the lines, so let's just stitch the elements together
+        traceback_text = ''.join(lines)
+
+        # now we can send it to the user
+        # it would probably be best to wrap this in a codeblock via e.g. a Paginator
+        print(traceback_text)
 
         if isinstance(error, commands.CommandOnCooldown):
 
@@ -501,6 +519,8 @@ As a side note, you can overwrite a previous value using key=different_value. Ty
 
         else:
             print(error)
+
+        print(error)
 
 
 def setup(bot):

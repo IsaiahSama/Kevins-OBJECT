@@ -15,8 +15,14 @@ bot.load_extension("myhelp")
 @bot.event
 async def on_ready():
     print("And we're in")
-    activity = discord.Activity(name=">>>help", type=discord.ActivityType.unknown)
+    activity = discord.Activity(name=">>>help", type=discord.ActivityType.watching)
     await bot.change_presence(activity=activity)
+
+@bot.command()
+@commands.is_owner()
+async def refresh(ctx):
+    bot.reload_extension("objcom")
+    bot.reload_extension("myhelp")
 
 yes=os.getenv("key")
 bot.run(yes)
