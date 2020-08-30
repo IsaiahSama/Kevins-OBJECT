@@ -75,8 +75,11 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
         await ctx.send("name=Jerry_The_Beast")
         await ctx.send("```Good, now tell me any attributes of Jerry_The_Beast that you want```")
         await ctx.send("age=1004")
+        await asyncio.sleep(1)
         await ctx.send("description=very scary")
+        await asyncio.sleep(1)
         await ctx.send("something without an equal sign to end")
+        await asyncio.sleep(1)
         await ctx.send("```Completed. View with >>>mycreations```")
 
     @commands.command()
@@ -91,13 +94,20 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
             tosend.append(f"Name: {creation['name']}, ID: {creation['itemid']}, Object Type: {creation['objtype']}\n")
         
         p = '\n'.join(tosend)
-        await ctx.send(f"Here is a list of all of your items:{p}")
+        await ctx.send(f"""Here is a list of all of your items:
+{p}""")
         await ctx.send("You can view more information with >>>view itemid. Using the name will return the first match. Not just yours")
 
     
     @commands.command()
     async def view(self, ctx, idtoview):
-        itemtoview = [x for x in self.cusdictlist if idtoview == x["itemid"] or idtoview == x["name"]]
+        try:
+            idtoview = int(idtoview)
+        except ValueError:
+            pass
+
+        itemtoview = [x for x in self.cusdictlist if x["itemid"] == idtoview or x["name"] == idtoview]
+
         if itemtoview:
             itv = itemtoview[0]
             embed = discord.Embed(
@@ -106,7 +116,10 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
                 color=randint(0, 0xffffff)
             )
 
-            for k, v in itv:
+            for k, v in itv.items():
+                if k == "userid":
+                    continue
+                k = k.capitalize()
                 embed.add_field(name=k, value=v)
             
             await ctx.send(embed=embed)
@@ -165,6 +178,11 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
 
     @commands.command()
     async def delete(self, ctx, idtodelete, conf=False):
+        try:
+            idtodelete = int(idtodelete)
+        except ValueError:
+            pass
+
         itemtodelete = [obj for obj in self.cusdictlist if obj["itemid"] == idtodelete and obj["userid"] == ctx.author.id]
 
         if itemtodelete:
@@ -173,9 +191,13 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
                 await ctx.send(f"This will delete this item permanately. Do >>>delete {idtodelete} True to confirm")
                 return
 
-            await ctx.send(f"Deleting {itd.name}")
-            del itd
+            await ctx.send(f"Deleting {itd['name']}")
+            self.cusdictlist.remove(itd)
             await ctx.send("Successful, for I have devoured it :yum:")
+            toupdate = [x for x in self.cusdictlist if x["itemid"] > itd["itemid"]]
+            for changing in toupdate:
+                changing["itemid"] = changing["itemid"] - 1
+            del itd
         else:
             await ctx.send("I could not find any item belonging to you with that ID")
             return
@@ -383,9 +405,9 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
             await ctx.send("Refrain from using spaces. Use _ or - instead")
             return
 
-        thename = re.findall(r"name=(.+?)", msg.content)
+        thename = re.findall(r"name=(.+)", msg.content)
         if not thename:
-            await ctx.send("Did not get the name. Try again. Format is name=the_name_you_want")
+            await ctx.send("Did not get the name. Try again. Format is name=the_name_you_want. For now, I'm leaving. So just run the command again")
             return
 
         _vname = thename[0]
@@ -414,7 +436,7 @@ As a side note, you can overwrite a previous value using key=different_value. Ty
         while counter < 21:
             await ctx.send("Speak, I'm listening")
             try:
-                msg = await self.bot.wait_for("message", timeout=90, check=check)
+                msg = await self.bot.wait_for("message", timeout=300, check=check)
             except:
                 await ctx.send("You took too long to respond and I lost interest 😓. Try again later")
                 return
@@ -431,28 +453,29 @@ As a side note, you can overwrite a previous value using key=different_value. Ty
 
             attri = re.findall(r"(\S+)=(.+)", msg)
             if attri:
-                attri = attri[0]
-                key = attri[0]
-                if key.lower() in self.rwords:
-                    await ctx.send("You cannot use That as a key because it is a reserved word")
-                    continue
-                if " " in key:
-                    await ctx.send("Your key must not have in spaces. Use _ or - instead")
-                    continue
+                for creation in attri:
+                    key = creation[0]
+                    if key.lower() in self.rwords:
+                        await ctx.send("You cannot use That as a key because it is a reserved word")
+                        continue
+                    if " " in key:
+                        await ctx.send("Your key must not have in spaces. Use _ or - instead")
+                        continue
 
-                if len(key) > 15:
-                    await ctx.send("Your key should not be more than 15 characters")
+                    if len(key) > 15:
+                        await ctx.send("Your key should not be more than 15 characters")
 
-                value = attri[1]
-                if len(value) > 50:
-                    await ctx.send("Your value cannot be more than 50 characters")
+                    value = creation[1]
+                    if len(value) > 50:
+                        await ctx.send("Your value cannot be more than 50 characters")
 
+                    setattr(objmaking, key, value)
+                    counter += 1
+                    if counter >= 20:
+                        break
             else:
                 await ctx.send("That did not match the key=value format I told you to use 🏋️‍♂️")
                 continue
-
-            setattr(objmaking, key, value)
-            counter += 1
 
         await ctx.send("Completed. View with >>>mycreations")
         self.cusobjlist.append(objmaking)

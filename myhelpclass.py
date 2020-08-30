@@ -24,6 +24,8 @@ mycreations = MyHelp("My Creations", "Reveals all of your Creations", ">>>mycrea
 
 view = MyHelp("View", "Tells you everything about the item whose id you enter", ">>>view itemid")
 
+delete = MyHelp("Delete", "Deletes an object belonging to you that matches the ID you say", ">>>delete itemid")
+
 mhelp = MyHelp("Help", "Reveals the help command", ">>>help")
 
 commandlist = MyHelp("Command List", "Shows a list of commands", ">>>commandlist")
@@ -34,4 +36,4 @@ action = MyHelp("Actions", "Shows the actions available for an object. Note thes
 
 do = MyHelp("Do", "Does an action available to the class of the object whose id you specify", ">>>do nameofaction objectid")
 
-cmdlist = [create, template, example, mycreations, view, mhelp, commandlist, mobject, action, do]
+cmdlist = [create, template, example, mycreations, view, delete, mhelp, commandlist, mobject, action, do]
