@@ -35,11 +35,14 @@ class Item(TheWorld):
     def getcomlist(self):
         msg = self.getcom()
         lmsg = re.findall(r"are\s(.+)", msg)
+        lmsg = lmsg[0]
         lmsg = lmsg.strip("and")
-        nlmsg = lmsg.split(" ")
+        nlmsg = lmsg.split(",")
         for content in nlmsg:
             if "," in content:
                 content = content.strip(",")
+        return nlmsg
+
 
     def puton(self):
         return f"Equipped {self.username}'s {self.name}"
@@ -61,11 +64,14 @@ class Person(TheWorld):
     def getcomlist(self):
         msg = self.getcom()
         lmsg = re.findall(r"are\s(.+)", msg)
+        lmsg = lmsg[0]
         lmsg = lmsg.strip("and")
-        nlmsg = lmsg.split(" ")
+        nlmsg = lmsg.split(",")
         for content in nlmsg:
             if "," in content:
                 content = content.strip(",")
+        return nlmsg
+
 
     def talkto(self):
         return f"Spoke to {self.name}"
@@ -87,11 +93,14 @@ class Creature(TheWorld):
     def getcomlist(self):
         msg = self.getcom()
         lmsg = re.findall(r"are\s(.+)", msg)
+        lmsg = lmsg[0]
         lmsg = lmsg.strip("and")
-        nlmsg = lmsg.split(" ")
+        nlmsg = lmsg.split(",")
         for content in nlmsg:
             if "," in content:
                 content = content.strip(",")
+        return nlmsg
+
 
     def tame(self):
         return f"Managed to tame {self.username}'s {self.name}"
@@ -116,11 +125,14 @@ class Potion(TheWorld):
     def getcomlist(self):
         msg = self.getcom()
         lmsg = re.findall(r"are\s(.+)", msg)
+        lmsg = lmsg[0]
         lmsg = lmsg.strip("and")
-        nlmsg = lmsg.split(" ")
+        nlmsg = lmsg.split(",")
         for content in nlmsg:
             if "," in content:
                 content = content.strip(",")
+        return nlmsg
+
 
     def drink(self):
         return f"Gulped down {self.username}'s {self.name}"
@@ -139,11 +151,14 @@ class Vehicle(TheWorld):
     def getcomlist(self):
         msg = self.getcom()
         lmsg = re.findall(r"are\s(.+)", msg)
-        lmsg = lmsg.strip("and")
-        nlmsg = lmsg.split(" ")
+        lmsg = lmsg[0]
+        lmsg = lmsg.replace(" and ", ",")
+        lmsg = lmsg.replace(" ", "")
+        nlmsg = lmsg.split(",")
         for content in nlmsg:
             if "," in content:
                 content = content.strip(",")
+        return nlmsg
 
     def drive(self):
         return f"Drove around in {self.username}'s {self.name}"
@@ -165,11 +180,15 @@ class Weapon(TheWorld):
     def getcomlist(self):
         msg = self.getcom()
         lmsg = re.findall(r"are\s(.+)", msg)
-        lmsg = lmsg.strip("and")
-        nlmsg = lmsg.split(" ")
+        lmsg = lmsg[0]
+        lmsg = lmsg.replace(" and ", ",")
+        lmsg = lmsg.replace(" ", "")
+        nlmsg = lmsg.split(",")
         for content in nlmsg:
             if "," in content:
                 content = content.strip(",")
+        return nlmsg
+
 
     def swing(self):
         return f"Swings around {self.username}'s {self.name}"
@@ -194,11 +213,15 @@ class Armour(TheWorld):
     def getcomlist(self):
         msg = self.getcom()
         lmsg = re.findall(r"are\s(.+)", msg)
-        lmsg = lmsg.strip("and")
-        nlmsg = lmsg.split(" ")
+        lmsg = lmsg[0]
+        lmsg = lmsg.replace(" and ", ",")
+        lmsg = lmsg.replace(" ", "")
+        nlmsg = lmsg.split(",")
         for content in nlmsg:
             if "," in content:
                 content = content.strip(",")
+        return nlmsg
+
 
     def equip(self):
         return F"Equipped {self.username}'s {self.name}"
@@ -220,11 +243,15 @@ class Pet(TheWorld):
     def getcomlist(self):
         msg = self.getcom()
         lmsg = re.findall(r"are\s(.+)", msg)
-        lmsg = lmsg.strip("and")
-        nlmsg = lmsg.split(" ")
+        lmsg = lmsg[0]
+        lmsg = lmsg.replace(" and ", ",")
+        lmsg = lmsg.replace(" ", "")
+        nlmsg = lmsg.split(",")
         for content in nlmsg:
             if "," in content:
                 content = content.strip(",")
+        return nlmsg
+
 
     def rub(self):
         return f"Rubs {self.username}'s {self.name}"
@@ -246,11 +273,15 @@ class Enemy(TheWorld):
     def getcomlist(self):
         msg = self.getcom()
         lmsg = re.findall(r"are\s(.+)", msg)
-        lmsg = lmsg.strip("and")
-        nlmsg = lmsg.split(" ")
+        lmsg = lmsg[0]
+        lmsg = lmsg.replace(" and ", ",")
+        lmsg = lmsg.replace(" ", "")
+        nlmsg = lmsg.split(",")
         for content in nlmsg:
             if "," in content:
                 content = content.strip(",")
+        return nlmsg
+
 
     def stare(self):
         return f"Stares at {self.username}'s {self.name}"
@@ -272,11 +303,15 @@ class Ability(TheWorld):
     def getcomlist(self):
         msg = self.getcom()
         lmsg = re.findall(r"are\s(.+)", msg)
-        lmsg = lmsg.strip("and")
-        nlmsg = lmsg.split(" ")
+        lmsg = lmsg[0]
+        lmsg = lmsg.replace(" and ", ",")
+        lmsg = lmsg.replace(" ", "")
+        nlmsg = lmsg.split(",")
         for content in nlmsg:
             if "," in content:
                 content = content.strip(",")
+        return nlmsg
+
 
     def use(self):
         return f"Uses {self.username}'s {self.name}"
@@ -301,11 +336,15 @@ class Passive(TheWorld):
     def getcomlist(self):
         msg = self.getcom()
         lmsg = re.findall(r"are\s(.+)", msg)
-        lmsg = lmsg.strip("and")
-        nlmsg = lmsg.split(" ")
+        lmsg = lmsg[0]
+        lmsg = lmsg.replace(" and ", ",")
+        lmsg = lmsg.replace(" ", "")
+        nlmsg = lmsg.split(",")
         for content in nlmsg:
             if "," in content:
                 content = content.strip(",")
+        return nlmsg
+
 
     def showoff(self):
         return f"Shows off {self.username}'s {self.name}"
