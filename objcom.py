@@ -25,7 +25,6 @@ class objcommands(commands.Cog):
     else:
         cusdictlist = []
 
-    cusobjlist = []
     rwords = ["itemid", "userid", "username", "exists", "objtype"]
 
     # Commands
@@ -236,17 +235,24 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
                 await ctx.send("Could not find an object matching that ID")
                 return
 
+            objtoget = objtoget[0]
             uobj = await self.getobj(objtoget)
             await ctx.send(uobj.getcom())
 
     @commands.command()
     async def do(self, ctx, actionname, objectid):
+        try:
+            objectid = int(objectid)
+        except ValueError:
+            await ctx.send("Not a number")
+            return
         dicttoobj = [uobj for uobj in self.cusdictlist if uobj["itemid"] == objectid]
         if not dicttoobj:
             await ctx.send("Could not find an object with that ID")
             return
 
         toobj = dicttoobj[0]
+        print(type(toobj))
         obj = await self.getobj(toobj)
 
         if actionname.lower() not in obj.getcomlist():
@@ -254,7 +260,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
             return
 
         _atd = actionname.lower()
-        msg = eval("obj._atd()")
+        msg = eval(f"obj.{_atd}()")
         await ctx.send(msg)
 
 
@@ -362,8 +368,8 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
                 return
 
             tc = tochange.content
-            if len(tc) > 50:
-                await ctx.send("Your value cannot be more than 50 characters")
+            if len(tc) > 150:
+                await ctx.send("Your value cannot be more than 150 characters")
                 continue
             
             break
@@ -466,8 +472,8 @@ As a side note, you can overwrite a previous value using key=different_value. Ty
                         await ctx.send("Your key should not be more than 15 characters")
 
                     value = creation[1]
-                    if len(value) > 50:
-                        await ctx.send("Your value cannot be more than 50 characters")
+                    if len(value) > 150:
+                        await ctx.send("Your value cannot be more than 150 characters")
 
                     setattr(objmaking, key, value)
                     counter += 1
@@ -478,7 +484,6 @@ As a side note, you can overwrite a previous value using key=different_value. Ty
                 continue
 
         await ctx.send("Completed. View with >>>mycreations")
-        self.cusobjlist.append(objmaking)
         self.cusdictlist.append(objmaking.__dict__)
 
     
@@ -486,7 +491,6 @@ As a side note, you can overwrite a previous value using key=different_value. Ty
         _typeobj = objtoget["objtype"]
         p = objtoget
         objtoreturn = classes[_typeobj](p['exists'], p['userid'], p['username'], p['itemid'], p['objtype'], p['name'])
-        
         for k, v in p.items():
             setattr(objtoreturn, k, v)
 
