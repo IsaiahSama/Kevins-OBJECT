@@ -23,5 +23,24 @@
         "spoiler": "Yes",
         "Description": "Car go zoom",
         "description": "cargozoom"
+    },
+    {
+        "exists": true,
+        "userid": 493839592835907594,
+        "username": "Kevin-Dono",
+        "itemid": 2,
+        "objtype": "Item",
+        "name": "Band_Of_Experience",
+        "description": "A band said to increase exp gain by 20% from all sources",
+        "cost": "50000",
+        "effect": "Increases exp gain by 20% from all sources",
+        "duration": "5 fights",
+        "tier": "5",
+        "healthup": "0",
+        "powerup": "0",
+        "mindmgup": "0",
+        "maxdmgup": "0",
+        "critup": "0",
+        "potionoritem": "item"
     }
 ]
