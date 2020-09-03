@@ -307,6 +307,8 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
             else:
                 await ctx.send("I did not find that key. Try again please")
                 continue
+
+        await ctx.send("Next...")
         
         while True:
             await ctx.send(f"What would you like to change {nktc} to?")
@@ -317,9 +319,6 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
                 return
             
             resp = resp.content
-            if ' ' in resp:
-                await ctx.send("Your key can not have in a space. use _ or - instead")
-                continue
 
             if len(resp) > 15:
                 await ctx.send("Your key cannot be more than 15 charactes")
@@ -357,12 +356,12 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
                 await ctx.send("I did not find that key. Try again please")
                 continue
 
-        await ctx.send(f"The value for {nktc} is {otu[nktc]}")
+        await ctx.send(f"The value for {nktc[0]} is {otu[nktc[0]]}")
         while True:
             await ctx.send("What would you like to change this value to?")
 
             try:
-                tochange = await self.bot.wait_for("message", timeout=60, check=check)
+                tochange = await self.bot.wait_for("message", timeout=120, check=check)
             except TimeoutError:
                 await ctx.send(":yawning_face: Goodbye")
                 return
@@ -374,7 +373,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
             
             break
 
-        otu[nktc] = tc
+        otu[nktc[0]] = tc
         await ctx.send("Completed")
 
     

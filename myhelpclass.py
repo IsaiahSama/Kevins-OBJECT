@@ -28,6 +28,8 @@ delete = MyHelp("Delete", "Deletes an object belonging to you that matches the I
 
 mhelp = MyHelp("Help", "Reveals the help command", ">>>help")
 
+update = MyHelp("Update", "Allows you to update one of your items", ">>>update itemid")
+
 commandlist = MyHelp("Command List", "Shows a list of commands", ">>>commandlist")
 
 mobject = MyHelp("OBJECT", "Shows what the acronym OBJECT in Kevin's OBJECT stands for", ">>>OBJECT")
@@ -36,4 +38,4 @@ action = MyHelp("Actions", "Shows the actions available for an object. Note thes
 
 do = MyHelp("Do", "Does an action available to the class of the object whose id you specify", ">>>do nameofaction objectid")
 
-cmdlist = [create, template, example, mycreations, view, delete, mhelp, commandlist, mobject, action, do]
+cmdlist = [create, template, example, mycreations, view, delete, mhelp, commandlist, mobject, action, do, update]

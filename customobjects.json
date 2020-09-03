@@ -42,5 +42,35 @@
         "maxdmgup": "0",
         "critup": "0",
         "potionoritem": "item"
+    },
+    {
+        "exists": true,
+        "userid": 493839592835907594,
+        "username": "Kevin-Dono",
+        "itemid": 3,
+        "objtype": "Pet",
+        "name": "Toe_of_kevin",
+        "description": "A mysterious toe said to belong to Kevin not Kevin after slaying him multiple times",
+        "type": "Unknown",
+        "numofstages": "3",
+        "exptoevolve": "200",
+        "currentstage": "1",
+        "evolvesinto": "kevins_finger_and_toe",
+        "playmessage": "the toe wiggles intensively",
+        "feedmessage": "Kevin's Toe spins around in the food"
+    },
+    {
+        "exists": true,
+        "userid": 493839592835907594,
+        "username": "Kevin-Dono",
+        "itemid": 4,
+        "objtype": "Potion",
+        "name": "Kevin's_Secret_Candy",
+        "description": "A rare item said to increase your levels by 5. Has a 3% chance of dropping from defeated enemies",
+        "cost": "Unknown",
+        "effect": "Increases level by 5",
+        "duration": "1",
+        "tier": "ALL",
+        "potionoritem": "potion"
     }
 ]
