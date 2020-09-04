@@ -21,9 +21,9 @@ class objcommands(commands.Cog):
 
     if path.exists("customobjects.json"):
         with open("customobjects.json") as p:
-            cusdictlist = json.load(p)
+            custom_dict_list = json.load(p)
     else:
-        cusdictlist = []
+        custom_dict_list = []
 
     rwords = ["itemid", "userid", "username", "exists", "objtype"]
 
@@ -83,7 +83,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
 
     @commands.command()
     async def mycreations(self, ctx):
-        usercreations = [dic for dic in self.cusdictlist if dic["userid"] == ctx.author.id]
+        usercreations = [dic for dic in self.custom_dict_list if dic["userid"] == ctx.author.id]
         if not usercreations:
             await ctx.send("You have not created any items as yet. Get started with >>>help")
             return
@@ -105,7 +105,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
         except ValueError:
             pass
 
-        itemtoview = [x for x in self.cusdictlist if x["itemid"] == idtoview or x["name"] == idtoview]
+        itemtoview = [x for x in self.custom_dict_list if x["itemid"] == idtoview or x["name"] == idtoview]
 
         if itemtoview:
             itv = itemtoview[0]
@@ -118,6 +118,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
             for k, v in itv.items():
                 if k == "userid":
                     continue
+                if k == "guildid": continue
                 k = k.capitalize()
                 embed.add_field(name=k, value=v)
             
@@ -126,7 +127,17 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
             await ctx.send("Could not find any item with that ID")
             return
 
-    
+    @commands.command()
+    async def creations(self, ctx):
+        itemstoshow = [x for x in self.custom_dict_list if x["guildid"] == ctx.guild.id]
+        tosend = []
+        for creation in itemstoshow:
+            tosend.append(f"Name: {creation['name']}, ID: {creation['itemid']}, Object Type: {creation['objtype']}, Creator: {creation['username']}\n")
+        
+        p = '\n'.join(tosend)
+        await ctx.send("Here is a list of all items created in your server")
+        await ctx.send(p)
+
     @commands.command()
     async def update(self, ctx, idtoupdate=None):
         try:
@@ -182,7 +193,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
         except ValueError:
             pass
 
-        itemtodelete = [obj for obj in self.cusdictlist if obj["itemid"] == idtodelete and obj["userid"] == ctx.author.id]
+        itemtodelete = [obj for obj in self.custom_dict_list if obj["itemid"] == idtodelete and obj["userid"] == ctx.author.id]
 
         if itemtodelete:
             itd = itemtodelete[0]
@@ -191,9 +202,9 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
                 return
 
             await ctx.send(f"Deleting {itd['name']}")
-            self.cusdictlist.remove(itd)
+            self.custom_dict_list.remove(itd)
             await ctx.send("Successful, for I have devoured it :yum:")
-            toupdate = [x for x in self.cusdictlist if x["itemid"] > itd["itemid"]]
+            toupdate = [x for x in self.custom_dict_list if x["itemid"] > itd["itemid"]]
             for changing in toupdate:
                 changing["itemid"] = changing["itemid"] - 1
             del itd
@@ -230,7 +241,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
                 await ctx.send("That ID is not a number")
                 return
 
-            objtoget = [uobj for uobj in self.cusdictlist if uobj["itemid"] == itg]
+            objtoget = [uobj for uobj in self.custom_dict_list if uobj["itemid"] == itg]
             if not objtoget:
                 await ctx.send("Could not find an object matching that ID")
                 return
@@ -246,7 +257,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
         except ValueError:
             await ctx.send("Not a number")
             return
-        dicttoobj = [uobj for uobj in self.cusdictlist if uobj["itemid"] == objectid]
+        dicttoobj = [uobj for uobj in self.custom_dict_list if uobj["itemid"] == objectid]
         if not dicttoobj:
             await ctx.send("Could not find an object with that ID")
             return
@@ -383,7 +394,7 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
 
 
     async def getuserobj(self, ownerid):
-        toreturn = [x for x in self.cusdictlist if x["userid"] == ownerid]
+        toreturn = [x for x in self.custom_dict_list if x["userid"] == ownerid]
         
         if toreturn:
             return toreturn
@@ -418,11 +429,11 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
         _vname = thename[0]
         _objtomake = objtomake.capitalize()
         _iditem = await self.getid(ctx)
-        userobj = classes[_objtomake](True, ctx.author.id, ctx.author.name, _iditem, _objtomake, _vname)
+        userobj = classes[_objtomake](True, ctx.author.id, ctx.author.name, _iditem, _objtomake, _vname, ctx.guild.id)
         await self.creating(ctx, userobj)
 
     async def getid(self, ctx):
-        iid = [x["itemid"] for x in self.cusdictlist]
+        iid = [x["itemid"] for x in self.custom_dict_list]
         if iid:
             iid.sort(reverse=True)
             highestid = iid[0]
@@ -483,7 +494,7 @@ As a side note, you can overwrite a previous value using key=different_value. Ty
                 continue
 
         await ctx.send("Completed. View with >>>mycreations")
-        self.cusdictlist.append(objmaking.__dict__)
+        self.custom_dict_list.append(objmaking.__dict__)
 
     
     async def getobj(self, objtoget):
@@ -498,9 +509,9 @@ As a side note, you can overwrite a previous value using key=different_value. Ty
 
     @tasks.loop(minutes=2)
     async def save(self):
-        if len(self.cusdictlist) > 0:
+        if len(self.custom_dict_list) > 0:
             with open("customobjects.json", "w") as f:
-                json.dump(self.cusdictlist, f, indent=4)
+                json.dump(self.custom_dict_list, f, indent=4)
 
     # Events
 

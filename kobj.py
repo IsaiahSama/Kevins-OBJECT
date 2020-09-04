@@ -7,13 +7,14 @@ def register(klass):
     
 class TheWorld:
 
-    def __init__(self, exists=False, userid=None, username=None, itemid=None, objtype=None, name=None):
+    def __init__(self, exists=False, userid=None, username=None, itemid=None, objtype=None, name=None, guildid=None):
         self.exists = exists
         self.userid = userid
         self.username = username
         self.itemid = itemid
         self.objtype = objtype
         self.name = name
+        self.guildid = guildid
 
     def getid(self):
         return self.itemid
