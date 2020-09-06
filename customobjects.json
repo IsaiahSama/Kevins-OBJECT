@@ -93,5 +93,22 @@
         "lifesteal": "something",
         "cost": "something",
         "tier": "5"
+    },
+    {
+        "exists": true,
+        "userid": 493839592835907594,
+        "username": "Tsuki",
+        "itemid": 6,
+        "objtype": "Passive",
+        "name": "Tide Of Battle",
+        "guildid": 739229902921793637,
+        "description": "A sacred passive which increases user's min and max dmg by 3% for each passing turn...",
+        "usagename": "The battle shifts in my tide",
+        "effect": "increases min and max dmg by 3%",
+        "powerX": "0",
+        "power+": "0",
+        "healthup": "0",
+        "mindmgup": "0",
+        "maxdmgup": "0"
     }
 ]

@@ -309,6 +309,9 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
 
             ktc = ktc.content
             if ktc.startswith(">>>"): continue
+            if ktc.lower() in self.rwords:
+                await ctx.send("You cannot change that key")
+                continue
 
             nktc = [key for key in otu.keys() if key.lower() == ktc.lower()]
             
@@ -357,6 +360,10 @@ You can tell me ANYTHING, the only limit is that each item can only have a max o
 
             ktc = ktc.content
             if ktc.startswith(">>>"): continue
+
+            if ktc.lower() in self.rwords:
+                await ctx.send("You cannot change that key")
+                continue
 
             nktc = [key for key in otu.keys() if key.lower() == ktc.lower()]
             
