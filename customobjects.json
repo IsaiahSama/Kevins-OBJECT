@@ -110,5 +110,20 @@
         "healthup": "0",
         "mindmgup": "0",
         "maxdmgup": "0"
+    },
+    {
+        "exists": true,
+        "userid": 493839592835907594,
+        "username": "Tsukiyomi No Mikoto",
+        "itemid": 7,
+        "objtype": "Item",
+        "name": "lucky_coin",
+        "guildid": 739229902921793637,
+        "description": "A lucky coin found somewhere or the other which increases the amount of Parade coins gained from battle by 1.5x",
+        "cost": "120000",
+        "effect": "Increases coins gained by 1.5x",
+        "duration": "5 fights",
+        "tier": "5",
+        "potionoritem": "item"
     }
 ]

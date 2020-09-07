@@ -127,12 +127,8 @@ class Potion(TheWorld):
         msg = self.getcom()
         lmsg = re.findall(r"are\s(.+)", msg)
         lmsg = lmsg[0]
-        lmsg = lmsg.strip("and")
-        nlmsg = lmsg.split(",")
-        for content in nlmsg:
-            if "," in content:
-                content = content.strip(",")
-        return nlmsg
+        lmsg = lmsg.split("and")
+        return lmsg
 
 
     def drink(self):
@@ -338,13 +334,8 @@ class Passive(TheWorld):
         msg = self.getcom()
         lmsg = re.findall(r"are\s(.+)", msg)
         lmsg = lmsg[0]
-        lmsg = lmsg.replace(" and ", ",")
-        lmsg = lmsg.replace(" ", "")
-        nlmsg = lmsg.split(",")
-        for content in nlmsg:
-            if "," in content:
-                content = content.strip(",")
-        return nlmsg
+        lmsg = lmsg.split("and")
+        return lmsg
 
 
     def showoff(self):
