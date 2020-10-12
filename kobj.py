@@ -34,15 +34,8 @@ class Item(TheWorld):
 
     @classmethod
     def getcomlist(self):
-        msg = self.getcom()
-        lmsg = re.findall(r"are\s(.+)", msg)
-        lmsg = lmsg[0]
-        lmsg = lmsg.strip("and")
-        nlmsg = lmsg.split(",")
-        for content in nlmsg:
-            if "," in content:
-                content = content.strip(",")
-        return nlmsg
+        toreturn = ["puton", "takeoff", "drop"]
+        return toreturn
 
 
     def puton(self):
@@ -63,15 +56,8 @@ class Person(TheWorld):
 
     @classmethod
     def getcomlist(self):
-        msg = self.getcom()
-        lmsg = re.findall(r"are\s(.+)", msg)
-        lmsg = lmsg[0]
-        lmsg = lmsg.strip("and")
-        nlmsg = lmsg.split(",")
-        for content in nlmsg:
-            if "," in content:
-                content = content.strip(",")
-        return nlmsg
+        toreturn = ["talkto", "wave", "stare"]
+        return toreturn
 
 
     def talkto(self):
@@ -92,15 +78,8 @@ class Creature(TheWorld):
 
     @classmethod
     def getcomlist(self):
-        msg = self.getcom()
-        lmsg = re.findall(r"are\s(.+)", msg)
-        lmsg = lmsg[0]
-        lmsg = lmsg.strip("and")
-        nlmsg = lmsg.split(",")
-        for content in nlmsg:
-            if "," in content:
-                content = content.strip(",")
-        return nlmsg
+        toreturn = ["tame", "runfrom", "runto", "fight"]
+        return toreturn
 
 
     def tame(self):
@@ -124,11 +103,8 @@ class Potion(TheWorld):
 
     @classmethod
     def getcomlist(self):
-        msg = self.getcom()
-        lmsg = re.findall(r"are\s(.+)", msg)
-        lmsg = lmsg[0]
-        lmsg = lmsg.split("and")
-        return lmsg
+        toreturn = ["drink", "drop"]
+        return toreturn
 
 
     def drink(self):
@@ -146,16 +122,8 @@ class Vehicle(TheWorld):
 
     @classmethod
     def getcomlist(self):
-        msg = self.getcom()
-        lmsg = re.findall(r"are\s(.+)", msg)
-        lmsg = lmsg[0]
-        lmsg = lmsg.replace(" and ", ",")
-        lmsg = lmsg.replace(" ", "")
-        nlmsg = lmsg.split(",")
-        for content in nlmsg:
-            if "," in content:
-                content = content.strip(",")
-        return nlmsg
+        toreturn = ["drive", "hit", "crash"]
+        return toreturn
 
     def drive(self):
         return f"Drove around in {self.username}'s {self.name}"
@@ -175,16 +143,8 @@ class Weapon(TheWorld):
 
     @classmethod
     def getcomlist(self):
-        msg = self.getcom()
-        lmsg = re.findall(r"are\s(.+)", msg)
-        lmsg = lmsg[0]
-        lmsg = lmsg.replace(" and ", ",")
-        lmsg = lmsg.replace(" ", "")
-        nlmsg = lmsg.split(",")
-        for content in nlmsg:
-            if "," in content:
-                content = content.strip(",")
-        return nlmsg
+        toreturn = ["swing", "strike", "showoff", "sheathe"]
+        return toreturn
 
 
     def swing(self):
@@ -208,16 +168,8 @@ class Armour(TheWorld):
 
     @classmethod
     def getcomlist(self):
-        msg = self.getcom()
-        lmsg = re.findall(r"are\s(.+)", msg)
-        lmsg = lmsg[0]
-        lmsg = lmsg.replace(" and ", ",")
-        lmsg = lmsg.replace(" ", "")
-        nlmsg = lmsg.split(",")
-        for content in nlmsg:
-            if "," in content:
-                content = content.strip(",")
-        return nlmsg
+        toreturn = ["equip", "takeoff", "polish"]
+        return toreturn
 
 
     def equip(self):
@@ -238,16 +190,8 @@ class Pet(TheWorld):
 
     @classmethod
     def getcomlist(self):
-        msg = self.getcom()
-        lmsg = re.findall(r"are\s(.+)", msg)
-        lmsg = lmsg[0]
-        lmsg = lmsg.replace(" and ", ",")
-        lmsg = lmsg.replace(" ", "")
-        nlmsg = lmsg.split(",")
-        for content in nlmsg:
-            if "," in content:
-                content = content.strip(",")
-        return nlmsg
+        toreturn = ["rub", "play", "feed"]
+        return toreturn
 
 
     def rub(self):
@@ -268,16 +212,8 @@ class Enemy(TheWorld):
 
     @classmethod
     def getcomlist(self):
-        msg = self.getcom()
-        lmsg = re.findall(r"are\s(.+)", msg)
-        lmsg = lmsg[0]
-        lmsg = lmsg.replace(" and ", ",")
-        lmsg = lmsg.replace(" ", "")
-        nlmsg = lmsg.split(",")
-        for content in nlmsg:
-            if "," in content:
-                content = content.strip(",")
-        return nlmsg
+        toreturn = ["stare", "fight", "run"]
+        return toreturn
 
 
     def stare(self):
@@ -298,16 +234,8 @@ class Ability(TheWorld):
 
     @classmethod
     def getcomlist(self):
-        msg = self.getcom()
-        lmsg = re.findall(r"are\s(.+)", msg)
-        lmsg = lmsg[0]
-        lmsg = lmsg.replace(" and ", ",")
-        lmsg = lmsg.replace(" ", "")
-        nlmsg = lmsg.split(",")
-        for content in nlmsg:
-            if "," in content:
-                content = content.strip(",")
-        return nlmsg
+        toreturn = ["use", "turnon", "turnoff", "showoff"]
+        return toreturn
 
 
     def use(self):
@@ -331,11 +259,8 @@ class Passive(TheWorld):
 
     @classmethod
     def getcomlist(self):
-        msg = self.getcom()
-        lmsg = re.findall(r"are\s(.+)", msg)
-        lmsg = lmsg[0]
-        lmsg = lmsg.split("and")
-        return lmsg
+        toreturn = ["showff", "use"]
+        return toreturn
 
 
     def showoff(self):

@@ -125,5 +125,17 @@
         "duration": "5 fights",
         "tier": "5",
         "potionoritem": "item"
+    },
+    {
+        "exists": true,
+        "userid": 493839592835907594,
+        "username": "Kevin-Dono",
+        "itemid": 8,
+        "objtype": "Creature",
+        "name": "James",
+        "guildid": 336642139381301249,
+        "age": "21",
+        "size": "very large",
+        "skills": "everything"
     }
 ]
